@@ -80,6 +80,9 @@ class MLBScoresSensor(CoordinatorEntity):
         self._attendance = None
         self._event_name = None
         self._event_short_name = None
+        self._event_type = None
+        self._game_notes = None
+        self._series_summary = None
         self._venue_name = None
         self._venue_city = None
         self._venue_state = None
@@ -242,6 +245,9 @@ class MLBScoresSensor(CoordinatorEntity):
         attrs["attendance"] = self.coordinator.data["attendance"]
         attrs["event_name"] = self.coordinator.data["event_name"]
         attrs["event_short_name"] = self.coordinator.data["event_short_name"]
+        attrs["event_type"] = self.coordinator.data["event_type"]
+        attrs["game_notes"] = self.coordinator.data["game_notes"]
+        attrs["series_summary"] = self.coordinator.data["series_summary"]
         attrs["venue_name"] = self.coordinator.data["venue_name"]
         attrs["venue_city"] = self.coordinator.data["venue_city"]
         attrs["venue_state"] = self.coordinator.data["venue_state"]
