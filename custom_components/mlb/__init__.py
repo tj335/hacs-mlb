@@ -285,12 +285,36 @@ async def async_get_state(config) -> dict:
                     except:
                         featuredAthlete_1_Type = None
 
+                    try:
+                        featuredAthlete_2_Type = event["competitions"][0]["status"]["featuredAthletes"][2]["name"]
+
+                    except:
+                        featuredAthlete_2_Type = None
+
+                    wp_index = -1
+                    lp_index = -1
+                    sp_index = -1
+
                     if featuredAthlete_0_Type == 'winningPitcher':
                         wp_index = 0
-                        lp_index = 1
-                    else:
-                        wp_index = 1
+                    elif featuredAthlete_0_Type == 'losingPitcher':
                         lp_index = 0
+                    elif featuredAthlete_0_Type == 'savingPitcher':
+                        sp_index = 0
+
+                    if featuredAthlete_1_Type == 'winningPitcher':
+                        wp_index = 1
+                    elif featuredAthlete_1_Type == 'losingPitcher':
+                        lp_index = 1
+                    elif featuredAthlete_1_Type == 'savingPitcher':
+                        sp_index = 1
+
+                    if featuredAthlete_2_Type == 'winningPitcher':
+                        wp_index = 2
+                    elif featuredAthlete_2_Type == 'losingPitcher':
+                        lp_index = 2
+                    elif featuredAthlete_2_Type == 'savingPitcher':
+                        sp_index = 2
 
                     try:
                         values["winning_pitcher"] = event["competitions"][0]["status"]["featuredAthletes"][wp_index]["athlete"]["fullName"]
@@ -425,6 +449,33 @@ async def async_get_state(config) -> dict:
                     except:
                         values["losing_pitcher_era"] = None
 
+                    try:
+                        values["saving_pitcher"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["athlete"]["fullName"]
+                    except:
+                        values["saving_pitcher"] = None
+                        
+
+                    try:
+                        if event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][0]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][0]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][1]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][1]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][2]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][2]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][3]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][3]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][4]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][4]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][5]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][5]["displayValue"]
+                        elif event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][6]["name"] == "saves":
+                            values["saving_pitcher_saves"] = event["competitions"][0]["status"]["featuredAthletes"][sp_index]["statistics"][6]["displayValue"]
+                        else:
+                            values["saving_pitcher_saves"] = None
+                    except:
+                        values["saving_pitcher_saves"] = None
+                    
+
                 else:
                     values["winning_pitcher"] = None
                     values["winning_pitcher_wins"] = None
@@ -434,6 +485,8 @@ async def async_get_state(config) -> dict:
                     values["losing_pitcher_wins"] = None
                     values["losing_pitcher_losses"] = None
                     values["losing_pitcher_era"] = None
+                    values["saving_pitcher"] = None
+                    values["saving_pitcher_saves"] = None
 
 
                 try:
@@ -748,6 +801,8 @@ async def async_get_state(config) -> dict:
             values["losing_pitcher_wins"] = None
             values["losing_pitcher_losses"] = None
             values["losing_pitcher_era"] = None
+            values["saving_pitcher"] = None
+            values["saving_pitcher_saves"] = None
             values["game_status"] = None
             values["home_team_abbr"] = None
             values["home_team_id"] = None
@@ -856,6 +911,8 @@ async def async_clear_states(config) -> dict:
         "losing_pitcher_wins": None,
         "losing_pitcher_losses": None,
         "losing_pitcher_era": None,
+        "saving_pitcher": None,
+        "saving_pitcher_saves": None,
         "game_status": None,
         "home_team_abbr": None,
         "home_team_id": None,
