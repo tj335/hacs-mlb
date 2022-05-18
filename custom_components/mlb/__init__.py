@@ -223,7 +223,25 @@ async def async_get_state(config) -> dict:
                     values["event_short_name"] = event["shortName"]
                 except:
                     values["event_short_name"] = None
+
+                 # Formatted as "STD", "RD16", "QTR"
+                try:
+                    values["event_type"] = event["competitions"][0]["type"]["abbreviation"]
+                except:
+                    values["event_type"] = None
                 
+                # Formatted as "East 1st Round - Game 7", "East 2nd Round - Game 1"
+                try:
+                    values["game_notes"] = event["competitions"][0]["notes"][0]["headline"]
+                except:
+                    values["game_notes"] = None
+                
+                # Formatted as "Series Tied 3-3"
+                try:
+                    values["series_summary"] = event["competitions"][0]["series"]["summary"]
+                except:
+                    values["series_summary"] = None   
+            
                 try:
                     values["venue_name"] = event["competitions"][0]["venue"]["fullName"]
                 except:
@@ -784,6 +802,9 @@ async def async_get_state(config) -> dict:
             values["attendance"] = None
             values["event_name"] = None
             values["event_short_name"] = None
+            values["event_type"] = None
+            values["game_notes"] = None
+            values["series_summary"] = None
             values["venue_name"] = None
             values["venue_city"] = None
             values["venue_state"] = None
@@ -894,6 +915,9 @@ async def async_clear_states(config) -> dict:
         "attendance": None,
         "event_name": None,
         "event_short_name": None,
+        "event_type": None,
+        "game_notes": None,
+        "series_summary": None,
         "venue_name": None,
         "venue_city": None,
         "venue_state": None,
