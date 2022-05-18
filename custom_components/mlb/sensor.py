@@ -97,6 +97,8 @@ class MLBScoresSensor(CoordinatorEntity):
         self._losing_pitcher_wins = None
         self._losing_pitcher_losses = None
         self._losing_pitcher_era = None
+        self._saving_pitcher = None
+        self._saving_pitcher_saves = None
         self._game_status = None
         self._home_team_abbr = None
         self._home_team_id = None
@@ -257,6 +259,8 @@ class MLBScoresSensor(CoordinatorEntity):
         attrs["losing_pitcher_wins"] = self.coordinator.data["losing_pitcher_wins"]
         attrs["losing_pitcher_losses"] = self.coordinator.data["losing_pitcher_losses"]
         attrs["losing_pitcher_era"] = self.coordinator.data["losing_pitcher_era"]
+        attrs["saving_pitcher"] = self.coordinator.data["saving_pitcher"]
+        attrs["saving_pitcher_saves"] = self.coordinator.data["saving_pitcher_saves"]
         attrs["game_status"] = self.coordinator.data["game_status"]
         attrs["home_team_abbr"] = self.coordinator.data["home_team_abbr"]
         attrs["home_team_id"] = self.coordinator.data["home_team_id"]
