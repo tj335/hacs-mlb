@@ -1,9 +1,9 @@
 {
     "domain": "mlb",
     "name": "MLB",
-    "version": "0.1",
-    "documentation": "https://github.com/zacs/ha_nfl",
-    "issue_tracker": "https://github.com/zacs/ha_nfl/issues",
+    "version": "0.4",
+    "documentation": "https://github.com/tj335/hacs_mlb",
+    "issue_tracker": "https://github.com/tj335/hacs_mlb/issues",
     "dependencies": [],
     "codeowners": ["@tj335"],
     "config_flow": true,
