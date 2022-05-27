@@ -160,18 +160,6 @@ async def update_game(config) -> dict:
 async def async_get_state(config) -> dict:
     """Query API for status."""
 
-    # Calculate the game time
-    try:
-        prior_state = values["state"]
-        prior_game_length = values["game_length"]
-        prior_game_end_time = values["game_end_time"]
-    except:
-        prior_state = None
-        prior_game_length = None
-        prior_game_end_time = None
-                
-    _LOGGER.debug("prior_state is %s", prior_state)
-
     values = {}
     headers = {"User-Agent": USER_AGENT, "Accept": "application/ld+json"}
     data = None
@@ -200,29 +188,11 @@ async def async_get_state(config) -> dict:
                 except:
                     values["state"] = None
                 
-                # This try/except block was uncommented on 5/4
-                try:
-                    if prior_state in ['STATUS_IN_PROGRESS'] and values["state"] in ['STATUS_FINAL']:
-                        _LOGGER.debug("Calulating game time for %s" % (team_id))
-                        values["game_end_time"] = arrow.now().format(arrow.FORMAT_W3C)
-                        values["game_length"] = str(values["game_end_time"] - event["date"])
-                    elif values["state"] not in ['STATUS_FINAL']:
-                        values["game_end_time"] = None
-                        values["game_length"] = None
-                    else:
-                        values["game_end_time"] = prior_game_end_time
-                        values["game_length"] = prior_game_length
-                except:
-                    values["game_end_time"] = None
-                    values["game_length"] = None
-                
-                
-                _LOGGER.debug("Getting event date")
                 try:
                     values["date"] = event["date"]
                 except:
                     values["date"] = None
-                _LOGGER.debug("Retrieved event date - %s", values["date"])
+                
                 try:
                     values["attendance"] = event["competitions"][0]["attendance"]
                 except:
@@ -768,41 +738,6 @@ async def async_get_state(config) -> dict:
                     except:
                         values["headlines"] = None
                 
-                #if event["status"]["type"]["state"].lower() in ['pre', 'post']: # could use status.completed == true as well
-                    # x.events[3].competitions[0].odds[1].awayTeamOdds.winPercentage
-                    # x.events[3].competitions[0].odds[1].homeTeamOdds.winPercentage
-                #else:
-                
-                
-                #    if event["competitions"][0]["competitors"][team_index]["homeAway"] == "home":
-                #        try:
-                #            values["team_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["homeWinPercentage"]
-                #            values["opponent_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["awayWinPercentage"]
-                #        except:
-                #            values["team_win_probability"] = None
-                #            values["opponent_win_probability"] = None
-                #    else:
-                #        try:
-                #            values["team_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["awayWinPercentage"]
-                #            values["opponent_win_probability"] = event["competitions"][0]["situation"]["lastPlay"]["probability"]["homeWinPercentage"]
-                #        except:
-                #            values["team_win_probability"] = None
-                #            values["opponent_win_probability"] = None
-                
-                #try:
-                #    values["team_record"] = event["competitions"][0]["competitors"][team_index]["records"][0]["summary"]
-                #except:
-                #    values["team_record"] = None
-                #values["team_homeaway"] = event["competitions"][0]["competitors"][team_index]["homeAway"]
-                #values["team_logo"] = event["competitions"][0]["competitors"][team_index]["team"]["logo"]
-                #try:
-                #    values["team_colors"] = [''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["color"])), 
-                #                         ''.join(('#',event["competitions"][0]["competitors"][team_index]["team"]["alternateColor"]))]
-                #except:
-                #    if team_id == 'NFC':
-                #        values["team_colors"] = ['#013369','#013369']
-                #    if team_id == 'AFC':
-                #        values["team_colors"] = ['#D50A0A','#D50A0A']
                 values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
                 values["private_fast_refresh"] = False
         
@@ -811,7 +746,7 @@ async def async_get_state(config) -> dict:
             _LOGGER.debug("Team not found on scoreboard feed.  Using team API.")
             
             team_url = API_TEAM_ENDPOINT + team_id
-            _LOGGER.info(team_url)
+            _LOGGER.debug(team_url)
             async with aiohttp.ClientSession() as session:
                 async with session.get(team_url, headers=headers) as r:
                     if r.status == 200:
@@ -825,7 +760,7 @@ async def async_get_state(config) -> dict:
             # Determine our opponents team id (abbreviation) so that we can lookup their information as well
             oppo_id = team_data["nextEvent"][0]["competitions"][0]["competitors"][oppo_index]["team"]["abbreviation"]
             oppo_url = API_TEAM_ENDPOINT + oppo_id
-            _LOGGER.info(oppo_url)
+            _LOGGER.debug(oppo_url)
             async with aiohttp.ClientSession() as session:
                 async with session.get(oppo_url, headers=headers) as r:
                     if r.status == 200:
@@ -844,8 +779,6 @@ async def async_get_state(config) -> dict:
             
             values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
 
-            values["game_length"] = None
-            values["game_end_time"] = None
             values["attendance"] = None
 
             try:
@@ -899,7 +832,18 @@ async def async_get_state(config) -> dict:
                     values["venue_indoor"] = team_data["franchise"]["venue"]["indoor"]
                 except:
                     values["venue_indoor"] = None
-            
+            else:
+                try:
+                    values["venue_capacity"] = oppo_data["franchise"]["venue"]["capacity"]
+                except:
+                    values["venue_capacity"] = None
+                
+                # Formatted as true/false
+                try:
+                    values["venue_indoor"] = oppo_data["franchise"]["venue"]["indoor"]
+                except:
+                    values["venue_indoor"] = None
+                    
             values["inning"] = None
             values["inning_description"] = None
             values["weather_conditions"] = None
@@ -1098,9 +1042,7 @@ async def async_clear_states(config) -> dict:
     values = {}
     # Reset values
     values = {
-        "game_length": None,
         "date": None,
-        "game_end_time": None,
         "attendance": None,
         "event_name": None,
         "event_short_name": None,
