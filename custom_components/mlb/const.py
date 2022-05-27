@@ -14,7 +14,7 @@ DEFAULT_TIMEOUT = 180
 
 # Misc
 TEAM_ID = ""
-VERSION = "0.1"
+VERSION = "0.4.2"
 ISSUE_URL = "https://github.com/tj335/hacs_mlb"
 DOMAIN = "mlb"
 PLATFORM = "sensor"
