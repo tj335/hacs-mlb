@@ -832,17 +832,36 @@ async def async_get_state(config) -> dict:
                         data = await r.json()
             oppo_data = data["team"]
 
-            values["state"] = team_data["nextEvent"][0]["competitions"][0]["status"]["type"]["name"]
-            values["date"] = team_data["nextEvent"][0]["date"]
+            try:
+                values["state"] = team_data["nextEvent"][0]["competitions"][0]["status"]["type"]["name"]
+            except:
+                values["state"] = None
+
+            try:
+                values["date"] = team_data["nextEvent"][0]["date"]
+            except:
+                values["date"] = None
             
             values["last_update"] = arrow.now().format(arrow.FORMAT_W3C)
 
             values["game_length"] = None
             values["game_end_time"] = None
             values["attendance"] = None
-            values["event_name"] = team_data["nextEvent"][0]["name"]
-            values["event_short_name"] = team_data["nextEvent"][0]["shortName"]
-            values["event_type"] = team_data["nextEvent"][0]["competitions"][0]["type"]["abbreviation"]
+
+            try:
+                values["event_name"] = team_data["nextEvent"][0]["name"]
+            except:
+                values["event_name"] = None
+
+            try:
+                values["event_short_name"] = team_data["nextEvent"][0]["shortName"]
+            except:
+                values["event_short_name"] = None
+
+            try:
+                values["event_type"] = team_data["nextEvent"][0]["competitions"][0]["type"]["abbreviation"]
+            except:
+                values["event_type"] = None
             
             try:
                 values["game_notes"] = team_data["nextEvent"][0]["competitions"][0]["notes"]["headline"]
@@ -853,10 +872,21 @@ async def async_get_state(config) -> dict:
                 values["series_summary"] = team_data["nextEvent"][0]["competitions"][0]["series"]["summary"]
             except:
                 values["series_summary"] = None
-            
-            values["venue_name"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["fullName"]
-            values["venue_city"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["address"]["city"]
-            values["venue_state"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["address"]["state"]
+ 
+            try:           
+                values["venue_name"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["fullName"]
+            except:
+                values["venue_name"] = None
+
+            try:
+                values["venue_city"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["address"]["city"]
+            except:
+                values["venue_city"] = None
+
+            try:
+                values["venue_state"] = team_data["nextEvent"][0]["competitions"][0]["venue"]["address"]["state"]
+            except:
+                values["venue_state"] = None
             
             if team_index == 0:
                 try:
@@ -885,25 +915,53 @@ async def async_get_state(config) -> dict:
             values["saving_pitcher"] = None
             values["saving_pitcher_saves"] = None
             values["game_status"] = None
-            values["home_team_abbr"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["abbreviation"]
-            values["home_team_id"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["id"]
-            values["home_team_city"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["location"]
-            values["home_team_name"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["shortDisplayName"]
+
+            try:
+                values["home_team_abbr"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["abbreviation"]
+            except:
+                values["home_team_abbr"] = None
+
+            try:
+                values["home_team_id"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["id"]
+            except:
+                values["home_team_id"] = None
+
+            try:
+                values["home_team_city"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["location"]
+            except:
+                values["home_team_city"] = None
+
+            try:
+                values["home_team_name"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["shortDisplayName"]
+            except:
+                values["home_team_name"] = None
 
             if team_index == 0:
                 values["home_team_color"] = team_data["color"]
                 values["home_team_alt_color"] = team_data["alternateColor"]
                 values["home_team_colors"] = [''.join(('#',team_data["color"])), 
                         ''.join(('#',team_data["alternateColor"]))]
-                values["home_team_record"] = team_data["record"]["items"][0]["summary"]
+
+                try:
+                    values["home_team_record"] = team_data["record"]["items"][0]["summary"]
+                except:
+                    values["home_team_record"] = None
             else:
                 values["home_team_color"] = oppo_data["color"]
                 values["home_team_alt_color"] = oppo_data["alternateColor"]
                 values["home_team_colors"] = [''.join(('#',oppo_data["color"])), 
                         ''.join(('#',oppo_data["alternateColor"]))]
-                values["home_team_record"] = oppo_data["record"]["items"][0]["summary"]
-            
-            values["home_team_logo"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["logos"][2]["href"]
+
+                try:
+                    values["home_team_record"] = oppo_data["record"]["items"][0]["summary"]
+                except:
+                    values["home_team_record"] = None
+
+            try:            
+                values["home_team_logo"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["team"]["logos"][2]["href"]
+            except:
+                values["home_team_logo"] = None
+
             values["home_team_runs"] = None
             values["home_team_hits"] = None
             values["home_team_errors"] = None
@@ -916,25 +974,53 @@ async def async_get_state(config) -> dict:
             values["home_team_ls_7"] = None
             values["home_team_ls_8"] = None
             values["home_team_ls_9"] = None
-            values["away_team_abbr"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["abbreviation"]
-            values["away_team_id"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["id"]
-            values["away_team_city"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["location"]
-            values["away_team_name"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["shortDisplayName"]
+
+            try:
+                values["away_team_abbr"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["abbreviation"]
+            except:
+                values["away_team_abbr"] = None
+
+            try:
+                values["away_team_id"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["id"]
+            except:
+                values["away_team_id"] = None
+
+            try:
+                values["away_team_city"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["location"]
+            except:
+                values["away_team_city"] = None
+
+            try:
+                values["away_team_name"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["shortDisplayName"]
+            except:
+                values["away_team_name"] = None
 
             if team_index == 1:
                 values["away_team_color"] = team_data["color"]
                 values["away_team_alt_color"] = team_data["alternateColor"]
                 values["away_team_colors"] = [''.join(('#',team_data["color"])), 
                         ''.join(('#',team_data["alternateColor"]))]
-                values["away_team_record"] = team_data["record"]["items"][0]["summary"]
+
+                try:
+                    values["away_team_record"] = team_data["record"]["items"][0]["summary"]
+                except:
+                    values["away_team_record"] = None
             else:
                 values["away_team_color"] = oppo_data["color"]
                 values["away_team_alt_color"] = oppo_data["alternateColor"]
                 values["away_team_colors"] = [''.join(('#',oppo_data["color"])), 
                         ''.join(('#',oppo_data["alternateColor"]))]
-                values["away_team_record"] = oppo_data["record"]["items"][0]["summary"]
-            
-            values["away_team_logo"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["logos"][2]["href"]
+
+                try:
+                    values["away_team_record"] = oppo_data["record"]["items"][0]["summary"]
+                except:
+                    values["away_team_record"] = None
+
+            try:            
+                values["away_team_logo"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["team"]["logos"][2]["href"]
+            except:
+                values["away_team_logo"] = None
+
             values["away_team_runs"] = None
             values["away_team_hits"] = None
             values["away_team_errors"] = None
@@ -947,8 +1033,17 @@ async def async_get_state(config) -> dict:
             values["away_team_ls_7"] = None
             values["away_team_ls_8"] = None
             values["away_team_ls_9"] = None
-            values["first_pitch_in"] = arrow.get(team_data["nextEvent"][0]["date"]).humanize()       
-            values["tv_network"] = team_data["nextEvent"][0]["competitions"][0]["broadcasts"][0]["media"]["shortName"]
+
+            try:
+                values["first_pitch_in"] = arrow.get(team_data["nextEvent"][0]["date"]).humanize()  
+            except:
+                values["first_pitch_in"] = None
+
+            try:     
+                values["tv_network"] = team_data["nextEvent"][0]["competitions"][0]["broadcasts"][0]["media"]["shortName"]
+            except:
+                values["tv_network"] = None
+
             values["last_play"] = None
             values["balls"] = None
             values["strikes"] = None
@@ -958,13 +1053,27 @@ async def async_get_state(config) -> dict:
             values["runner_on_3rd"] = None
             values["current_batter"] = None
             values["current_pitcher"] = None
-            values["home_team_starting_pitcher"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["probables"][0]["athlete"]["displayName"]
-            values["away_team_starting_pitcher"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["probables"][0]["athlete"]["displayName"]
+
+            try:
+                values["home_team_starting_pitcher"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][0]["probables"][0]["athlete"]["displayName"]
+            except:
+                values["home_team_starting_pitcher"] = None
+
+            try:
+                values["away_team_starting_pitcher"] = team_data["nextEvent"][0]["competitions"][0]["competitors"][1]["probables"][0]["athlete"]["displayName"]
+            except:
+                values["away_team_starting_pitcher"] = None
+
             values["odds"] = None
             values["overunder"] = None
             values["home_team_odds_win_pct"] = None
             values["away_team_odds_win_pct"] = None
-            values["headlines"] = team_data["nextEvent"][0]["competitions"][0]["notes"][0]["headline"]
+ 
+            try:
+                values["headlines"] = team_data["nextEvent"][0]["competitions"][0]["notes"][0]["headline"]
+            except:
+                values["headlines"] = None
+
             values["win_or_loss"] = None
 
         if values["state"] == 'STATUS_SCHEDULED' and ((arrow.get(values["date"])-arrow.now()).total_seconds() < 1200):
